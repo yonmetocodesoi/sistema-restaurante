@@ -44,8 +44,18 @@ jobs:
         working-directory: android
         run: ./gradlew app:assemble${{ matrix.flavor }}Release
 
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew app:assemble${{ matrix.flavor }}Debug
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: apk-${{ matrix.flavor }}-release
           path: android/app/build/outputs/apk/${{ matrix.flavor }}/release/*.apk
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-${{ matrix.flavor }}-debug
+          path: android/app/build/outputs/apk/${{ matrix.flavor }}/debug/*.apk
