@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Regras para a coleção de pedidos
+    match /orders/{orderId} {
+      // Permite que qualquer cliente crie um pedido (checkout)
+      allow create: if true;
+      
+      // Permite leitura e atualização apenas para o admin específico
+      allow read, update: if request.auth != null && request.auth.token.email == "yurealves641@gmail.com";
+      
+      // Bloqueia deleção por segurança
+      allow delete: if false;
+    }
+
+    // Comandas internas: garcom e churrasqueiro
+    match /comandas/{comandaId} {
+      // Garcom pode criar e todos os paineis internos podem ler/atualizar status
+      allow create, read, update: if true;
+      allow delete: if false;
+    }
+
+    // Registro de vendas do caixa
+    match /sales/{saleId} {
+      allow create, read: if true;
+      allow update, delete: if false;
+    }
+
+    // Resumo diario para evitar excesso de documentos
+    match /daily_summaries/{dateId} {
+      allow create, read, update: if true;
+      allow delete: if false;
+    }
+  }
+}
